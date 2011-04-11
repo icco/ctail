@@ -52,14 +52,18 @@ groups.each do |id, group|
       http.use_ssl = true
       req = Net::HTTP::Get.new(url.path)
       req.basic_auth(user, password)
-      req.set_form_data({ :mark_read => false })
+      #req.set_form_data({ :mark_read => false })
       res = http.start{|h| h.request(req) }
       json = JSON.parse(res.body)
+      data = json["messages"]
 
-      puts "\nGroup: #{group[:name]}"
-      puts "\t #{topic[:name]}"
-      json.each {|msg|
-         puts "\t\t#{msg[:user][:username]}: #{msg[:message]}" if !msg.nil?
+      puts "\n #{group[:name]} -- #{topic[:name]} \n"
+      data.each {|msg|
+         username = msg["user"]["username"]
+         time = Time.at msg["date_created"]
+         timestr = time.strftime "<%m/%d/%Y %H:%M:%S>"
+
+         puts "\t#{timestr} #{user}: #{msg["message"]}" if !msg.nil?
       }
    end
 end
