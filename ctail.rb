@@ -8,12 +8,17 @@ require 'json'
 
 CONVORE_URL = "https://convore.com"
 
-user = "icco"
-password = "nat100"
-
 GROUPS_URL = "#{CONVORE_URL}/api/groups.json"
 TOPICS_URL = "#{CONVORE_URL}/api/groups/%s/topics.json"
 TOPIC_URL = "#{CONVORE_URL}/api/topics/%s/messages.json"
+
+config_file = "#{ENV['HOME']}/.convore"
+unless File.exist?(config_file)
+  puts "You need to type your username and password (one per line) into #{config_file}."
+  exit!(1)
+end
+
+user,password = File.read(config_file).split("\n")
 
 # Get groups we know about
 url = URI.parse(GROUPS_URL)
